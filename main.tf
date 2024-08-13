@@ -44,7 +44,6 @@ resource "aws_default_route_table" "main-rtb" {
 }
 
 resource "aws_default_security_group" "myapp-sg" {
-  name   = "myapp-sg"
   vpc_id = aws_vpc.myapp-vpc.id
 
   ingress {
