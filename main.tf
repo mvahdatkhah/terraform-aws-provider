@@ -7,6 +7,7 @@ variable "subnet_cidr_block" {}
 variable "avail_zone" {}
 variable "env_prefix" {}
 variable "my_ip_address" {}
+variable "instance_type" {}
 
 resource "aws_vpc" "myapp-vpc" {
   cidr_block = var.vpc_cidr_block
@@ -42,7 +43,7 @@ resource "aws_default_route_table" "main-rtb" {
   }
 }
 
-resource "aws_security_group" "myapp-sg" {
+resource "aws_default_security_group" "myapp-sg" {
   name   = "myapp-sg"
   vpc_id = aws_vpc.myapp-vpc.id
 
@@ -54,17 +55,17 @@ resource "aws_security_group" "myapp-sg" {
   }
 
   ingress {
-    from_port = 8080
-    to_port = 8080
-    protocol = "tcp"
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
-    from_port = 0
-    to_port = 0
-    protocol = -1
-    cidr_blocks = ["0.0.0.0/0"]
+    from_port       = 0
+    to_port         = 0
+    protocol        = -1
+    cidr_blocks     = ["0.0.0.0/0"]
     prefix_list_ids = []
   }
 
@@ -77,13 +78,13 @@ resource "aws_security_group" "myapp-sg" {
 
 data "aws_ami" "latest-amazon-linux-image" {
   most_recent = true
-  owners = ["amazon"]
+  owners      = ["amazon"]
   filter {
-    name = "name"
+    name   = "name"
     values = ["amzn2-ami-hvm-*-x86_64-gp2"]
   }
   filter {
-    name = "virtualization-type"
+    name   = "virtualization-type"
     values = ["hvm"]
   }
 }
@@ -94,5 +95,17 @@ output "aws_ami_id" {
 }
 
 resource "aws_instance" "myapp-server" {
-  ami = data.aws_ami.latest-amazon-linux-image.id
+  ami           = data.aws_ami.latest-amazon-linux-image.id
+  instance_type = var.instance_type
+
+  subnet_id = aws_subnet.myapp-subnet-1.id
+  vpc_security_group_ids = [aws_default_security_group.myapp-sg.id]
+  availability_zone = var.avail_zone
+
+  associate_public_ip_address = true
+  key_name = "server-key-pair"
+
+  tags = {
+    Name = "${var.env_prefix}-server"
+  }
 }
