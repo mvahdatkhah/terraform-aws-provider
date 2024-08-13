@@ -1,4 +1,4 @@
-![](https://github.com/mvahdatkhah/terraform-learn/blob/main/.github/terraform_logo_light.svg)
+![](https://github.com/mvahdatkhah/terraform-aws-provider/blob/main/.github/terraform_logo_light.svg)
 
 # Terraform AWS Provider
 
