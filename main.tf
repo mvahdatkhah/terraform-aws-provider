@@ -83,7 +83,7 @@ data "aws_ami" "latest-amazon-linux-image" {
     values = ["amzn2-ami-hvm-*-x86-64-gp2"]
   }
   filter {
-    name = "Virtualization type"
+    name = "Virtualization-type"
     values = ["hvm"]
   }
 }
