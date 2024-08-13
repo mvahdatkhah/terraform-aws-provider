@@ -93,6 +93,6 @@ output "aws_ami_id" {
 
 }
 
-/*resource "aws_instance" "myapp-server" {
+resource "aws_instance" "myapp-server" {
   ami = data.aws_ami.latest-amazon-linux-image.id
-}*/
+}
