@@ -77,13 +77,14 @@ resource "aws_default_security_group" "myapp-sg" {
 }
 
 
-data "aws_ami" "latest-amazon-linux-image" {
+data "aws_ami" "ubuntu" {
   most_recent = true
-  owners      = ["amazon"]
+  owners      = ["099720109477"]
   filter {
     name   = "name"
-    values = ["amzn2-ami-hvm-*-x86_64-gp2"]
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
   }
+
   filter {
     name   = "virtualization-type"
     values = ["hvm"]
@@ -91,7 +92,7 @@ data "aws_ami" "latest-amazon-linux-image" {
 }
 
 output "aws_ami_id" {
-  value = data.aws_ami.latest-amazon-linux-image.id
+  value = data.aws_ami.ubuntu.id
 
 }
 
@@ -104,7 +105,7 @@ resource "aws_key_pair" "ssh-key" {
 }
 
 resource "aws_instance" "myapp-server" {
-  ami           = data.aws_ami.latest-amazon-linux-image.id
+  ami           = data.aws_ami.ubuntu.id
   instance_type = var.instance_type
 
   subnet_id = aws_subnet.myapp-subnet-1.id
@@ -117,25 +118,33 @@ resource "aws_instance" "myapp-server" {
   user_data = <<EOF
                   #!/bin/bash
                   # Install using the rpm repository
-                  sudo yum update -y
-                  sudo yum install -y yum-utils
-                  sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-                  
-                  # Install the latest version
-                  sudo yum install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+                  # Add Docker's official GPG key:
+                  sudo apt-get update
+                  sudo apt-get install ca-certificates curl -y
+                  sudo install -m 0755 -d /etc/apt/keyrings
+                  sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+                  sudo chmod a+r /etc/apt/keyrings/docker.asc
 
-                  # Linux post-installation steps for Docker Engine
+                  # Add the repository to Apt sources:
+                  echo \
+                    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+                    $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+                    sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+                  sudo apt-get update
+
+                  sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+                  
+                  ## Linux post-installation steps for Docker Engine
                   # Add your user to the docker group
                   sudo usermod -aG docker $USER
                   sudo newgrp docker
 
                   # Configure Docker to start on boot with systemd
-                  sudo systemctl enable docker.service
-                  sudo systemctl enable containerd.service
+                  sudo systemctl enable --now docker.service
+                  sudo systemctl enable --now containerd.service
 
                   # Run Nginx container
                   docker run -p 8080:80 nginx
-
                 EOF
 
   tags = {
