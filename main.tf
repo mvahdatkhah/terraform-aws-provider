@@ -11,6 +11,10 @@ variable "instance_type" {}
 variable "public_key_location" {
   type    = string
 }
+
+variable "private_key_location" {
+  type = string  
+}
 resource "aws_vpc" "myapp-vpc" {
   cidr_block = var.vpc_cidr_block
   tags = {
@@ -97,10 +101,10 @@ output "aws_ami_id" {
 }
 
 output "ec2_public_ip" {
-  value = aws_instance.myapp-server.public_ip  
+  value = aws_instance.myapp-server.public_ip
 }
 resource "aws_key_pair" "ssh-key" {
-  key_name = "server-key"  
+  key_name = "server-key"
   public_key = file(var.public_key_location)
 }
 
@@ -115,7 +119,20 @@ resource "aws_instance" "myapp-server" {
   associate_public_ip_address = true
   key_name = aws_key_pair.ssh-key.key_name
 
-  user_data = file("user_data.sh")
+  # user_data = file("user_data.sh")
+
+  connection {
+    type = "ssh"
+    host = self.public_ip
+    user = "ubuntu"
+    private_key = file(var.private_key_location)
+  }
+  provisioner "remot-exec" {
+    inline = [
+      "export ENV=dev",
+      "mkdir newdir"
+    ]
+  }
 
   tags = {
     Name = "${var.env_prefix}-server"
