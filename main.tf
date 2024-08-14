@@ -114,6 +114,29 @@ resource "aws_instance" "myapp-server" {
   associate_public_ip_address = true
   key_name = aws_key_pair.ssh-key.key_name
 
+  user_data = <<EOF
+                  #!/bin/bash
+                  # Install using the rpm repository
+                  sudo yum update -y
+                  sudo yum install -y yum-utils
+                  sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+                  
+                  # Install the latest version
+                  sudo yum install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+                  # Linux post-installation steps for Docker Engine
+                  # Add your user to the docker group
+                  sudo newgrp docker
+
+                  # Configure Docker to start on boot with systemd
+                  sudo systemctl enable docker.service
+                  sudo systemctl enable containerd.service
+
+                  # Run Nginx container
+                  docker run -p 8080:80 nginx
+
+                EOF
+
   tags = {
     Name = "${var.env_prefix}-server"
   }
