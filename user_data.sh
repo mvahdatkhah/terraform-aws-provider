@@ -21,6 +21,9 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin 
 sudo usermod -aG docker $USER
 sudo newgrp docker
 
+# Restart Docker to apply above change in user group
+sudo systemctl restart docker.service
+
 # Configure Docker to start on boot with systemd
 sudo systemctl enable --now docker.service
 sudo systemctl enable --now containerd.service
