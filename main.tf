@@ -122,7 +122,7 @@ resource "aws_instance" "myapp-server" {
                   sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
                   
                   # Install the latest version
-                  sudo yum install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+                  sudo yum install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
 
                   # Linux post-installation steps for Docker Engine
                   # Add your user to the docker group
