@@ -115,37 +115,7 @@ resource "aws_instance" "myapp-server" {
   associate_public_ip_address = true
   key_name = aws_key_pair.ssh-key.key_name
 
-  user_data = <<EOF
-                  #!/bin/bash
-                  # Install using the rpm repository
-                  # Add Docker's official GPG key:
-                  sudo apt-get update
-                  sudo apt-get install ca-certificates curl -y
-                  sudo install -m 0755 -d /etc/apt/keyrings
-                  sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
-                  sudo chmod a+r /etc/apt/keyrings/docker.asc
-
-                  # Add the repository to Apt sources:
-                  echo \
-                    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
-                    $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-                    sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-                  sudo apt-get update
-
-                  sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
-                  
-                  ## Linux post-installation steps for Docker Engine
-                  # Add your user to the docker group
-                  sudo usermod -aG docker $USER
-                  sudo newgrp docker
-
-                  # Configure Docker to start on boot with systemd
-                  sudo systemctl enable --now docker.service
-                  sudo systemctl enable --now containerd.service
-
-                  # Run Nginx container
-                  docker run -p 8080:80 nginx
-                EOF
+  user_data = file("user_data.sh")
 
   tags = {
     Name = "${var.env_prefix}-server"
