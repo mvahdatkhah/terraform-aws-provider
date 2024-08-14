@@ -127,7 +127,7 @@ resource "aws_instance" "myapp-server" {
     user = "ubuntu"
     private_key = file(var.private_key_location)
   }
-  provisioner "remot-exec" {
+  provisioner "remote-exec" {
     inline = [
       "export ENV=dev",
       "mkdir newdir"
