@@ -126,6 +126,7 @@ resource "aws_instance" "myapp-server" {
 
                   # Linux post-installation steps for Docker Engine
                   # Add your user to the docker group
+                  sudo usermod -aG docker $USER
                   sudo newgrp docker
 
                   # Configure Docker to start on boot with systemd
