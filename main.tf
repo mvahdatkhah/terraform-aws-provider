@@ -15,6 +15,7 @@ variable "public_key_location" {
 variable "private_key_location" {
   type = string  
 }
+
 resource "aws_vpc" "myapp-vpc" {
   cidr_block = var.vpc_cidr_block
   tags = {
@@ -128,12 +129,17 @@ resource "aws_instance" "myapp-server" {
     private_key = file(var.private_key_location)
   }
   provisioner "remote-exec" {
-    inline = [
-      "export ENV=dev",
-      "mkdir newdir"
-    ]
+    script = "user_data.sh"
   }
 
+  provisioner "local-exec" {
+    command = "echo ${self.public_ip} > output.txt"
+  }
+
+  provisioner "file" {
+    source = "user_data.sh"
+    destination = "/home/ubuntu/user_data_on_ec2.sh"
+  }
   tags = {
     Name = "${var.env_prefix}-server"
   }
