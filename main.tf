@@ -124,7 +124,7 @@ resource "aws_instance" "myapp-server" {
   provisioner "remote-exec" {
     inline = [
       "chmod +x /home/ubuntu/user_data_on_ec2.sh",
-      "sudo /home/ubuntu/user_data_on_ec2.sh"
+      "/home/ubuntu/user_data_on_ec2.sh"
     ]
   }
 
