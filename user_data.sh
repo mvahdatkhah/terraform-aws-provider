@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/bash
+
 # Install using the rpm repository
 # Add Docker's official GPG key:
 sudo apt-get update
