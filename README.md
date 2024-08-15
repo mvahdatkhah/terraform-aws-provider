@@ -4,6 +4,38 @@
 
 #### The [AWS Provider](https://registry.terraform.io/providers/hashicorp/aws/latest/docs) enables [Terraform](https://www.terraform.io/) to manage [AWS](https://aws.amazon.com/) resources
 
+### initialize
+
+    terraform init
+
+### preview terraform actions
+
+    terraform plan
+
+### apply configuration with variables
+
+    terraform apply -var-file terraform-dev.tfvars
+
+### destroy a single resource
+
+    terraform destroy -target aws_vpc.myapp-vpc
+
+### destroy everything fromtf files
+
+    terraform destroy
+
+### show resources and components from current state
+
+    terraform state list
+
+### show current state of a specific resource/data
+
+    terraform state show aws_vpc.myapp-vpc
+
+### set avail_zone as custom tf environment variable - before apply
+
+    export TF_VAR_avail_zone="us-east-1a"
+
 * [Contributing guide](https://hashicorp.github.io/terraform-provider-aws/)
 * [Quarterly development roadmap](https://github.com/hashicorp/terraform-provider-aws/blob/main/ROADMAP.md)
 * [FAQ](https://hashicorp.github.io/terraform-provider-aws/faq/)
