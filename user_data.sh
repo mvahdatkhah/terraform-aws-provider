@@ -19,7 +19,9 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin 
 ## Linux post-installation steps for Docker Engine
 # Add your user to the docker group
 sudo usermod -aG docker $USER
-sudo newgrp docker
+
+# Restart Docker to apply above change in user group
+sudo systemctl restart docker.service
 
 # Configure Docker to start on boot with systemd
 sudo systemctl enable --now docker.service
