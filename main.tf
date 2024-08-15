@@ -134,8 +134,12 @@ resource "aws_instance" "myapp-server" {
     destination = "/home/ubuntu/user_data_on_ec2.sh"
   }
   provisioner "remote-exec" {
-    script = file("user_data_on_ec2.sh")
+    inline = [
+    "chmod +x /home/ubuntu/user_data_on_ec2.sh",
+    "sudo /home/ubuntu/user_data_on_ec2.sh"
+    ]
   }
+  
 
   provisioner "local-exec" {
     command = "echo ${self.public_ip} > output.txt"
