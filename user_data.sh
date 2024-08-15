@@ -19,11 +19,11 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin 
 ## Linux post-installation steps for Docker Engine
 # Add your user to the docker group
 sudo usermod -aG docker $USER
-sudo newgrp docker
 
+sudo systemctl restart docker.service
 # Configure Docker to start on boot with systemd
 sudo systemctl enable --now docker.service
 sudo systemctl enable --now containerd.service
 
 # Run Nginx container
-docker run -p 8080:80 nginx
+sudo docker run --name web -d -p 8080:80 nginx
