@@ -24,9 +24,5 @@ sudo usermod -aG docker $USER
 # Restart Docker to apply above change in user group
 sudo systemctl restart docker.service
 
-# Configure Docker to start on boot with systemd
-sudo systemctl enable --now docker.service
-sudo systemctl enable --now containerd.service
-
 # Run Nginx container
 sudo docker run --name web -d -p 8080:80 nginx
