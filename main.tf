@@ -134,7 +134,7 @@ resource "aws_instance" "myapp-server" {
     destination = "/home/ubuntu/user_data_on_ec2.sh"
   }
   provisioner "remote-exec" {
-    script = "user_data.sh"
+    script = file("user_data_on_ec2.sh")
   }
 
   provisioner "local-exec" {
