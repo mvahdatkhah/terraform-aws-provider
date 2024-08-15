@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/sh
 
 # Install using the rpm repository
 # Add Docker's official GPG key:
