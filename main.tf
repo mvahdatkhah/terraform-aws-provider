@@ -70,7 +70,7 @@ resource "aws_key_pair" "ssh-key" {
 resource "aws_instance" "myapp-server" {
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = var.instance_type
-  subnet_id              = aws_subnet.myapp-subnet-1.id
+  subnet_id              = module.myapp-subnet.subnet.id
   vpc_security_group_ids = [aws_security_group.myapp-sg.id]
   availability_zone      = var.avail_zone
 
@@ -80,5 +80,4 @@ resource "aws_instance" "myapp-server" {
     Name = "${var.env_prefix}-server"
   }
 }
-
 
