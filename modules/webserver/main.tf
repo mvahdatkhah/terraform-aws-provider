@@ -59,6 +59,7 @@ resource "aws_instance" "myapp-server" {
     key_name = aws_key_pair.ssh-key.key_name
 
     user_data = file("./entry-script.sh")
+    user_data_replace_on_change = true
 
     tags = {
         Name = "${var.env_prefix}-server"
